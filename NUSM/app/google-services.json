@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "347779449826",
+    "firebase_url": "https://nusm-f6641.firebaseio.com",
+    "project_id": "nusm-f6641",
+    "storage_bucket": "nusm-f6641.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347779449826:android:5af6235441ddcf1a",
+        "android_client_info": {
+          "package_name": "com.dev.kih.nusm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347779449826-jkcn85tm8bdgp9r26hf7o9tprs43ukef.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dev.kih.nusm",
+            "certificate_hash": "d8b9a3a22dde7b13f0f53d3543a75f838c83f30d"
+          }
+        },
+        {
+          "client_id": "347779449826-rahobambc43tpscigte7kiv95bq8mdet.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-X1WCrN0sIeGu3g544BTy_1RPS3JxQsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347779449826-rahobambc43tpscigte7kiv95bq8mdet.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
