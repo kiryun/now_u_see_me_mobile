@@ -30,9 +30,12 @@ public class MainActivity extends AppCompatActivity {
                         // token 받은거 갱신안되도록 해줘야 함.
                         //https://firebase.google.com/docs/cloud-messaging/android/client?hl=ko
 
+                        //test용  get
+//                        apiClient.testGet();
+
                         // token 받은거 post요청으로 server에 보내
                         // 나중에 ApiClient로 묶어서 만들어야 함 get, post, delete 등 구현 해야함
-//                        apiClient.sendToken(token);
+                        apiClient.sendToken(token);
 
                         Log.d("FCM Log", "FCM 토큰: "+token);
                         Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
