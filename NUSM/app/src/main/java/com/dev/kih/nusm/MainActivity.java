@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Singleton singleton = Singleton.getInstance();
+        singleton.setContext(this);
         dbHelper = new DBHelper(getBaseContext(), dbName, null, dbVersion);
         db = dbHelper.getWritableDatabase();
         sql = "SELECT * FROM Notification ;";
@@ -67,10 +69,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String value = (String) parent.getItemAtPosition(position);
-                Intent intent = new Intent(getBaseContext(),ChoiceWho.class);
+                //Intent intent = new Intent(getBaseContext(),ChoiceWho.class);
                 //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("selectEventTime", value);
-                startActivity(intent);
+                //intent.putExtra("selectEventTime", value);
+                //startActivity(intent);
+                apiClient.sendData(value);
             }
         });
         FirebaseInstanceId.getInstance().getInstanceId()

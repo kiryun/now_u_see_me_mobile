@@ -7,9 +7,25 @@
     tools:context=".MainActivity"
     android:orientation="vertical">
 
-    <ImageView
+    <!--<ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"/>-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Determine"
+        android:id="@+id/button"/>
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/imageView"/>
+        android:orientation="vertical"
+        android:gravity ="center"
+        android:fillViewport="true"
+        android:layout_marginTop="10dp"
+        android:id="@+id/scrollView"
+        ></ScrollView>
+
+
 
 </LinearLayout>
