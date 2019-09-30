@@ -107,8 +107,16 @@ public class ApiClient {
             JSONObject postdata = new JSONObject();
             try {
                 postdata.put("eventTime", eventTime);
-                postdata.put("types", resultName);
-                postdata.put("imageName", resultType);
+                JSONArray imagedata =null;
+                JSONArray typedata =null;
+                imagedata = new JSONArray();
+                typedata = new JSONArray();
+                for(int i = 0; i<resultName.length;i++) {
+                    imagedata.put(resultName[i]);
+                    typedata.put(resultType[i]);
+                }
+                postdata.put("types", typedata);
+                postdata.put("imageName", imagedata);
             } catch(JSONException e){
                 // TODO Auto-generated catch block
                 e.printStackTrace();

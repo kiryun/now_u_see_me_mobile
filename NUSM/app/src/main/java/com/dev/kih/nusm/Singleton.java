@@ -38,8 +38,11 @@ public class Singleton {
         DataFrames.add(new GetDataFrame(is, names));
     }
     public GetDataFrame getDataFrames(int idx){
-        Log.d("Get data",  DataFrames.get(idx).getNames().get(0));
-        return DataFrames.get(idx);
+        if(DataFrames.size()>0) {
+            Log.d("Get data", DataFrames.get(idx).getNames().get(0));
+            return DataFrames.get(idx);
+        }
+        return null;
     }
     public int size_DataFrames(){
         return DataFrames.size();

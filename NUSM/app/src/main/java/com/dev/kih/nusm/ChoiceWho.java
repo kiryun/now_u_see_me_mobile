@@ -60,8 +60,10 @@ public class ChoiceWho extends AppCompatActivity {
 
         if(singleton.size_DataFrames() >0) {
             Singleton.GetDataFrame getDataFrame =singleton.getDataFrames(0);
-            urls = getDataFrame.getIs();
-            names = getDataFrame.getNames();
+            if(!getDataFrame.equals(null)) {
+                urls = getDataFrame.getIs();
+                names = getDataFrame.getNames();
+            }
         }
         for(int i = 0; i<urls.size();i++){
             Log.d("Test Get url", urls.get(i));
