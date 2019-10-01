@@ -33,30 +33,9 @@ import java.util.Map;
 
 public class ApiClient {
     private String URL = "http://203.252.91.45";//"http://127.0.0.1"; //return: 203.252.91.45
-    private String PORT = ":3001/";
+    private String PORT = ":3000/";
     private String url_media = "event/";
-    public boolean testGet(){
-        Log.d("test", "test");
-        try{
-            OkHttpClient client = new OkHttpClient();
-            String url = URL+PORT+url_media+"test";
-            Request request = new Request.Builder()
-                    .url(url)
-                    .get()
-                    .build();
 
-            client.newCall(request).enqueue(sendTokenCallback);
-            return true;
-
-        }catch (Exception e){
-            e.printStackTrace();;
-        }
-
-        return false;
-    }
-
-    // http://127.0.0.1:3000/media/token
-    //
     public boolean sendToken(String token){
         try{
             OkHttpClient client = new OkHttpClient();
@@ -170,12 +149,15 @@ public class ApiClient {
             catch (JSONException e){
                 e.printStackTrace();
             }
-            singleton.setDataFrames(img, name);
-            Log.d("Get data", "Send Singleton");
-            Intent intent = new Intent(singleton.getContext(),ChoiceWho.class);
-            //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("selectEventTime", singleton.getEventTime());
-            singleton.getContext().startActivity(intent);
+            if(img.size()>0) {
+                singleton.setDataFrames(img, name);
+                Log.d("Get data", "Send Singleton");
+                Intent intent = new Intent(singleton.getContext(), ChoiceWho.class);
+                intent.putExtra("selectEventTime", singleton.getEventTime());
+                singleton.getContext().startActivity(intent);
+            }
+            else
+                Log.d("Get data", "No Data");
         }
     };
     private Callback resultCallback = new Callback() {

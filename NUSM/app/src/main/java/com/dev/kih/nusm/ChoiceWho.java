@@ -47,6 +47,10 @@ public class ChoiceWho extends AppCompatActivity {
     String[] resultType;
     String[] resultName;
     String eventTime;
+    private String dbName = "ListDB.db";
+    private int dbVersion = 1;
+    private DBHelper dbHelper;
+    private SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +80,7 @@ public class ChoiceWho extends AppCompatActivity {
             public void run() {
                 try {
                     for (int i = 0; i < urls.size(); i++) {
-                        URL url = new URL("http://203.252.91.45:3001"+urls.get(i)+"/"+names.get(i));
+                        URL url = new URL("http://203.252.91.45:3000"+urls.get(i)+"/"+names.get(i));
                         HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                         conn.setDoInput(true);
                         conn.connect();
@@ -97,9 +101,16 @@ public class ChoiceWho extends AppCompatActivity {
         }catch (InterruptedException e){
             e.printStackTrace();
         }
-        resultType = new String[urls.size()];
-        resultName = new String[urls.size()];
-        createView(urls.size());
+        if(bitmaps.size() > 0) {
+            resultType = new String[urls.size()];
+            resultName = new String[urls.size()];
+            createView(urls.size());
+        }
+        else {
+            Log.d("URL Failure", "URL PROBLEM");
+            Toast.makeText(this, "URL Failure", Toast.LENGTH_SHORT).show();
+        }
+
         //////////////////////////////////////////////////
         Button bt = (Button)findViewById(R.id.button);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +120,11 @@ public class ChoiceWho extends AppCompatActivity {
                     resultName[i] = names.get(i);
                 }
                 apiClient.sendResult(eventTime, resultName, resultType);
-                //DB 데이터 삭제
+                dbHelper = new DBHelper(getBaseContext(), dbName, null, dbVersion);
+                db = dbHelper.getWritableDatabase();
+                db = dbHelper.getWritableDatabase();
+                db.execSQL("DELETE FROM Notification WHERE event_time = '" + eventTime + "';");
+                finish();
                 //이 뷰 끄고 main으로 이동
             }
         });
@@ -117,7 +132,6 @@ public class ChoiceWho extends AppCompatActivity {
 
     public void createView(int dataSize){
         createIdx = 0;
-//        scrollView.removeAllViews();
         ImageView imageView;
         RadioButton radioButton;
         RadioGroup radioGroup;

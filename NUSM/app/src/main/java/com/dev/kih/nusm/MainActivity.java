@@ -22,14 +22,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ApiClient apiClient = new ApiClient();
-    //// DB
     private String dbName = "ListDB.db";
     private String sql;
     private Cursor cursor;
     private int dbVersion = 1;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
-    ////
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String value = (String) parent.getItemAtPosition(position);
-                //Intent intent = new Intent(getBaseContext(),ChoiceWho.class);
-                //intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                //intent.putExtra("selectEventTime", value);
-                //startActivity(intent);
                 apiClient.sendData(value);
             }
         });
@@ -86,17 +81,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         String token = task.getResult().getToken();
                         Log.d("FCM Log", "FCM 토큰: "+token);
-                        // token 받은거 갱신안되도록 해줘야 함.
-                        //https://firebase.google.com/docs/cloud-messaging/android/client?hl=ko
-
-                        //test용  get
-//                        apiClient.testGet();
-
-                        // token 받은거 post요청으로 server에 보내
-                        // 나중에 ApiClient로 묶어서 만들어야 함 get, post, delete 등 구현 해야함
                         apiClient.sendToken(token);
-
-                        //Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
