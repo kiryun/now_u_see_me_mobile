@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -103,6 +104,9 @@ public class ChoiceWho extends AppCompatActivity {
         }
         if(bitmaps.size() > 0) {
             resultType = new String[urls.size()];
+            for(int i = 0; i<resultType.length;i++){
+                resultType[i]="Unknown";
+            }
             resultName = new String[urls.size()];
             createView(urls.size());
         }
@@ -122,10 +126,11 @@ public class ChoiceWho extends AppCompatActivity {
                 apiClient.sendResult(eventTime, resultName, resultType);
                 dbHelper = new DBHelper(getBaseContext(), dbName, null, dbVersion);
                 db = dbHelper.getWritableDatabase();
-                db = dbHelper.getWritableDatabase();
                 db.execSQL("DELETE FROM Notification WHERE event_time = '" + eventTime + "';");
+                Singleton singleton = Singleton.getInstance();
+                Message msg = singleton.getHandler().obtainMessage();
+                singleton.getHandler().sendMessage(msg);
                 finish();
-                //이 뷰 끄고 main으로 이동
             }
         });
     }
@@ -153,6 +158,8 @@ public class ChoiceWho extends AppCompatActivity {
         paramsRadi.weight = 1;
         LinearLayout.LayoutParams paramsImg = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        paramsImg.height = 250;
+        paramsImg.width = 250;
         LinearLayout.LayoutParams paramsAll = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         allLayout = new LinearLayout(getBaseContext());
@@ -195,5 +202,11 @@ public class ChoiceWho extends AppCompatActivity {
             allLayout.addView(verticalLayout);
         }
         scrollView.addView(allLayout);
+    }
+    public void onDestroy() {
+        super.onDestroy();
+        Singleton singleton = Singleton.getInstance();
+        Message msg = singleton.getHandler().obtainMessage();
+        singleton.getHandler().sendMessage(msg);
     }
 }

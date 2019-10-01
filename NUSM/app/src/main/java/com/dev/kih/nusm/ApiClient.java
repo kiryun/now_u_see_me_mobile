@@ -7,7 +7,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
+import android.os.Message;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -128,7 +131,8 @@ public class ApiClient {
     private Callback getCallback = new Callback() {
         @Override
         public void onFailure(Call call, IOException e) {
-            Log.d("Get Fail!", e.getMessage());
+            String error= e.getMessage();
+            Log.d("Get Fail!", error);
         }
         @Override
         public void onResponse(Call call, Response response) throws IOException {
@@ -156,8 +160,20 @@ public class ApiClient {
                 intent.putExtra("selectEventTime", singleton.getEventTime());
                 singleton.getContext().startActivity(intent);
             }
-            else
+            else {
                 Log.d("Get data", "No Data");
+                String dbName = "ListDB.db";
+                int dbVersion = 1;
+                DBHelper dbHelper;
+                SQLiteDatabase db;
+                String eventTime = singleton.getEventTime();
+                dbHelper = new DBHelper(singleton.getContext(), dbName, null, dbVersion);
+                db = dbHelper.getWritableDatabase();
+                db.execSQL("DELETE FROM Notification WHERE event_time = '" + eventTime + "';");
+                db.close();
+                Message msg = singleton.getHandler().obtainMessage();
+                singleton.getHandler().sendMessage(msg);
+            }
         }
     };
     private Callback resultCallback = new Callback() {

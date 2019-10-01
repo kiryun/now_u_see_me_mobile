@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ChoiceWho"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:noHistory="true">
         </activity>
         <service android:name=".MyFireBaseMessagingService">
             <intent-filter>

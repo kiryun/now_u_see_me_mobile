@@ -10,12 +10,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,9 +51,6 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
             sql = String.format("INSERT INTO " + "Notification" + " VALUES(NULL,'%s');"
                     , eventTime.get("eventTime"));
             db.execSQL(sql);
-            //ApiClient apiClient = new ApiClient();
-            //apiClient.sendData(1);
-            //데이터 메세지를 분기하여줍니다.
 
             ///////////////////////////////
             String messageTitle = remoteMessage.getNotification().getTitle();
@@ -72,6 +75,12 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
                 notificationManager.createNotificationChannel(channel);
             }
             notificationManager.notify(0, notificationBuilder.build());
+            //////////////////////////////////////////////////////////////////////////////////////////////View Reset
+            Singleton singleton = Singleton.getInstance();
+            Message msg = singleton.getHandler().obtainMessage();
+            singleton.getHandler().sendMessage(msg);
+            //////////////////////////////////////////////////////////////////////////////////////////////
+
         }
     }
 }

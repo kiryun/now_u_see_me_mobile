@@ -3,6 +3,8 @@ package com.dev.kih.nusm;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private int dbVersion = 1;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
-
+    Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,17 +41,7 @@ public class MainActivity extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();
         sql = "SELECT * FROM Notification ;";
         db = dbHelper.getWritableDatabase();
-        cursor = db.rawQuery(sql,null);
-        cursor.moveToFirst();
-        ArrayList<String> evenTimeData = new ArrayList<String>();
-        if(cursor.getCount()>0) {
-            while(true) {
-                Log.d("DBoutput", cursor.getString(1));
-                evenTimeData.add(cursor.getString(1));
-                if(!cursor.moveToNext())
-                    break;
-            }
-        }
+        //dbHelper.onReCreate(db);
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
             String intentData = String.valueOf(bundle.get("eventTime"));
@@ -60,17 +52,46 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("eventTime", intentData);
             }
         }
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, evenTimeData) ;
+        handler = new Handler(){
+            public void handleMessage(Message msg){
+                Singleton singleton = Singleton.getInstance();
+                dbHelper = new DBHelper(getBaseContext(), dbName, null, dbVersion);
+                db = dbHelper.getWritableDatabase();
+                sql = "SELECT * FROM Notification ;";
+                db = dbHelper.getWritableDatabase();
+                //dbHelper.onReCreate(db);
+                cursor = db.rawQuery(sql,null);
+                cursor.moveToFirst();
+                ArrayList<String> evenTimeData = new ArrayList<String>();
+                if(cursor.getCount()>0) {
+                    while(true) {
+                        Log.d("DBoutput", cursor.getString(1));
+                        evenTimeData.add(cursor.getString(1));
+                        if(!cursor.moveToNext())
+                            break;
+                    }
+                }
 
-        ListView listview = (ListView) findViewById(R.id.listview1) ;
-        listview.setAdapter(adapter) ;
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String value = (String) parent.getItemAtPosition(position);
-                apiClient.sendData(value);
+                ArrayAdapter adapter = new ArrayAdapter(singleton.getContext(), android.R.layout.simple_list_item_1, evenTimeData) ;
+                db.close();
+                cursor.close();
+                ListView listview = (ListView) findViewById(R.id.listview1) ;
+                singleton.setListView(listview);
+                listview.setAdapter(adapter) ;
+                listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String value = (String) parent.getItemAtPosition(position);
+                        apiClient.sendData(value);
+                    }
+                });
             }
-        });
+        };
+        Message msg = handler.obtainMessage();
+        handler.sendMessage(msg);
+        singleton.setHandler(handler);
+
+
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override

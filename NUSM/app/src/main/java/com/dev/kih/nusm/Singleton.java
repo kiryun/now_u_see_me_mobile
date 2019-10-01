@@ -2,10 +2,13 @@ package com.dev.kih.nusm;
 
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
+import android.widget.ListView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Singleton {
     private Singleton() { }
@@ -21,6 +24,20 @@ public class Singleton {
     private ArrayList<GetDataFrame> DataFrames = new ArrayList<GetDataFrame>();
     private Context context;
     private String eventTime;
+    private ListView listView;
+    private Handler handler;
+    public void setHandler(Handler handler){
+        this.handler = handler;
+    }
+    public Handler getHandler(){
+        return this.handler;
+    }
+    public void setListView(ListView listView){
+        this.listView = listView;
+    }
+    public ListView getListView(){
+        return this.listView;
+    }
     public void setEventTime(String eventTime){
         this.eventTime = eventTime;
     }
