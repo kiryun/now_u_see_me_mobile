@@ -28,7 +28,6 @@ import java.util.Map;
 public class MyFireBaseMessagingService extends FirebaseMessagingService {
     private String dbName = "ListDB.db";
     private String sql;
-    private Cursor cursor;
     private int dbVersion = 1;
     private DBHelper dbHelper;
     private SQLiteDatabase db;
@@ -36,14 +35,14 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token){
         Log.d("FCM Log", "Refreshed token: "+token);
     }
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage){
 
         if(remoteMessage.getNotification() != null){
             Log.d("FCM Log", "알림 메시지: "+remoteMessage.getNotification().getBody());
             String messageBody = remoteMessage.getNotification().getBody();
-            /////////////////////////////// 데이터 읽고 DB에 저장하기
+
+            /////////////////////////////// /////////////////////////////////////////////////////////////데이터 읽고 DB에 저장하기
             Map<String, String> eventTime = remoteMessage.getData();
             Log.d("Noti Log", "알림 데이터: "+eventTime.get("eventTime"));
             dbHelper = new DBHelper(this, dbName, null, dbVersion);
@@ -51,12 +50,11 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
             sql = String.format("INSERT INTO " + "Notification" + " VALUES(NULL,'%s');"
                     , eventTime.get("eventTime"));
             db.execSQL(sql);
-
-            ///////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////Notification 생성
             String messageTitle = remoteMessage.getNotification().getTitle();
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("eventTime", eventTime.get("eventTime"));
+            intent.putExtra("eventTime", eventTime.get("eventTime"));//
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             String channelId = "Channel ID";
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -75,11 +73,10 @@ public class MyFireBaseMessagingService extends FirebaseMessagingService {
                 notificationManager.createNotificationChannel(channel);
             }
             notificationManager.notify(0, notificationBuilder.build());
-            //////////////////////////////////////////////////////////////////////////////////////////////View Reset
+            //////////////////////////////////////////////////////////////////////////////////////////////ListView 갱신
             Singleton singleton = Singleton.getInstance();
             Message msg = singleton.getHandler().obtainMessage();
             singleton.getHandler().sendMessage(msg);
-            //////////////////////////////////////////////////////////////////////////////////////////////
 
         }
     }

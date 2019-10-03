@@ -41,9 +41,9 @@ public class MainActivity extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();
         sql = "SELECT * FROM Notification ;";
         db = dbHelper.getWritableDatabase();
-        //dbHelper.onReCreate(db);
+        //dbHelper.onReCreate(db);//DB 초기화
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if(bundle != null) {//FireBase에서 보낸 데이터를 가져오기
             String intentData = String.valueOf(bundle.get("eventTime"));
             if(!intentData.equals("null")) {
                 sql = String.format("INSERT INTO " + "Notification" + " VALUES(NULL,'%s');"
@@ -53,45 +53,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         handler = new Handler(){
-            public void handleMessage(Message msg){
+            public void handleMessage(Message msg){//ListView를 서비스에서 갱신할 수 있도록 Handler 생성
                 Singleton singleton = Singleton.getInstance();
                 dbHelper = new DBHelper(getBaseContext(), dbName, null, dbVersion);
                 db = dbHelper.getWritableDatabase();
                 sql = "SELECT * FROM Notification ;";
                 db = dbHelper.getWritableDatabase();
-                //dbHelper.onReCreate(db);
+                //dbHelper.onReCreate(db);//데이터베이스 초기화
+
+                //////////////////////////데이터베이스에 있는 데이터를 cursor를 이용해 읽어들인다
                 cursor = db.rawQuery(sql,null);
                 cursor.moveToFirst();
                 ArrayList<String> evenTimeData = new ArrayList<String>();
                 if(cursor.getCount()>0) {
                     while(true) {
                         Log.d("DBoutput", cursor.getString(1));
-                        evenTimeData.add(cursor.getString(1));
+                        evenTimeData.add(cursor.getString(1));//eventTime 변수에 저장
                         if(!cursor.moveToNext())
                             break;
                     }
                 }
-
+                /////////////////////////ListView 생성. eventTime을 ListView로 보여준다
                 ArrayAdapter adapter = new ArrayAdapter(singleton.getContext(), android.R.layout.simple_list_item_1, evenTimeData) ;
                 db.close();
                 cursor.close();
                 ListView listview = (ListView) findViewById(R.id.listview1) ;
-                singleton.setListView(listview);
                 listview.setAdapter(adapter) ;
                 listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         String value = (String) parent.getItemAtPosition(position);
-                        apiClient.sendData(value);
+                        apiClient.sendData(value);//선택한 eventTime 값을 서버에 전송시키는 서비스 호출
                     }
                 });
             }
         };
-        Message msg = handler.obtainMessage();
+        Message msg = handler.obtainMessage();//ListView 갱신
         handler.sendMessage(msg);
         singleton.setHandler(handler);
-
-
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                     @Override
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         String token = task.getResult().getToken();
                         Log.d("FCM Log", "FCM 토큰: "+token);
-                        apiClient.sendToken(token);
+                        apiClient.sendToken(token);//앱 시작시 토큰을 서버에 보내기
                     }
                 });
     }

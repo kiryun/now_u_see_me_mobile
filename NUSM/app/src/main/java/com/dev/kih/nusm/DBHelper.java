@@ -17,25 +17,20 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS Notification (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "   event_time TEXT);");
-        db.execSQL("CREATE TABLE IF NOT EXISTS Image_file (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                "   event_time TEXT);");
     }
     public void onSettingCreate(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS Notification");
-        db.execSQL("DROP TABLE IF EXISTS Image_file");
     }
     //버전이 업데이트되면 DB를 다시 만듭니다.
 
     public void onReCreate(SQLiteDatabase db){
         db.execSQL("DROP TABLE IF EXISTS Notification");
-        db.execSQL("DROP TABLE IF EXISTS Image_file");
         onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS Notification");
-        db.execSQL("DROP TABLE IF EXISTS Image_file");
         onCreate(db);
     }
 }
